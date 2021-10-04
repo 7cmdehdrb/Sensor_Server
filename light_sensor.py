@@ -8,6 +8,8 @@ class LightSensor(object):
 
         self.port_num = port_num
         self.light_value = 0
+        self.light_value_list = []
+        self.light_value_avg = 0
 
         self.ser = serial.Serial(
             port=port_num,
@@ -38,10 +40,18 @@ class LightSensor(object):
     def handleData(self, line):
         self.light_value = ord(line[-1])
 
+        if len(self.light_value_list) == 100:
+            self.light_value_list.pop(0)
+
+        self.light_value_list.append(ord(line[-1]))
+        self.light_value_avg = float(sum(self.light_value_list)) / float(
+            len(self.light_value_list)
+        )
+
 
 if __name__ == "__main__":
-    bt = LightSensor("COM4")
+    bt = LightSensor("/dev/ttyACM0")
 
     while True:
-        print(bt.light_value)
+        print(bt.light_value_avg, bt.light_value)
         sleep(0.1)
