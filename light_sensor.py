@@ -3,7 +3,7 @@ import threading
 from time import sleep
 
 
-class Bluetooth(object):
+class LightSensor(object):
     def __init__(self, port_num):
 
         self.port_num = port_num
@@ -40,7 +40,7 @@ class Bluetooth(object):
 
 
 if __name__ == "__main__":
-    bt = Bluetooth("COM4")
+    bt = LightSensor("COM4")
 
     while True:
         print(bt.light_value)
