@@ -1,7 +1,9 @@
-from bluetooth import *
+import os
 import threading
-import requests
 from datetime import datetime, timedelta
+from bluetooth import *
+from dotenv import load_dotenv
+import requests
 
 
 def makeURL(text, lang="en-US"):
@@ -14,8 +16,22 @@ def makeURL(text, lang="en-US"):
     return URL
 
 
+URL = "https://graph-ap02-apnortheast2.api.smartthings.com:443/api/smartapps/installations/d89ff3f3-9625-47d8-b957-3bd379904e07/device/068f0c39-f87d-4614-a868-0c59e2a36269/command/on"
+
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r
+
+
 class MotionSensor(object):
     def __init__(self, MAC):
+
+        self.token = os.getenv("TOKEN")
 
         self.value = 0
         self.last_value = 0
@@ -50,12 +66,15 @@ class MotionSensor(object):
             if dt > 10.0:
                 print("dt", dt)
                 print("MOTION SENSOR DETEDTED!")
-                res = requests.get(makeURL(text="입실 가상 스위치 켜", lang="ko-KR"))
+
+                res = requests.post(str(URL), auth=BearerAuth(str(self.token)))
+                print(res)
+
                 self.last_time = current_time
 
         self.last_value = value
 
 
 if __name__ == "__main__":
+    load_dotenv(verbose=True)
     bt = MotionSensor("98:D3:71:FD:9F:E0")
-    # bt.receive_data()

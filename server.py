@@ -4,12 +4,13 @@ from flask import Flask, request, jsonify
 from light_sensor import LightSensor
 from motion_sensor import MotionSensor
 
+load_dotenv(verbose=True)
+
 app = Flask(__name__)
 
-ls = LightSensor("/dev/ttyACM0")
+# ls = LightSensor("/dev/ttyACM0")
 ms = MotionSensor("98:D3:71:FD:9F:E0")
 
-load_dotenv(verbose=True)
 ACCESS_KEY = os.getenv("KEY")
 
 
@@ -23,10 +24,9 @@ def main():
 def light_sensor():
 
     key = request.args.get("key")
-    print(ls.light_value)
 
     if ACCESS_KEY == key:
-        data = {"data": int(ls.light_value_avg), "success": True}
+        data = {"data": int(0), "success": True}
         return jsonify(data)
     else:
         data = {"success": False}
