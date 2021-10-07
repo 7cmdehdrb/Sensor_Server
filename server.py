@@ -2,10 +2,12 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from light_sensor import LightSensor
+from motion_sensor import MotionSensor
 
 app = Flask(__name__)
 
 ls = LightSensor("/dev/ttyACM0")
+ms = MotionSensor("98:D3:71:FD:9F:E0")
 
 load_dotenv(verbose=True)
 ACCESS_KEY = os.getenv("KEY")
